@@ -31,7 +31,14 @@ int main()
     
     bool fadeOut = true;
     float alpha = 0;
-    float fadeSpeed = 0.01f;   
+    float fadeSpeed = 0.01f;
+    
+    
+    bool fadeOut2 = true;
+    float alpha2 = 0;
+    float fadeSpeed2 = 0.01f;
+    
+    
     
     
     // NOTE: Here there are some useful variables (should be initialized)
@@ -162,12 +169,31 @@ int main()
             
             case TITLE: 
             {
-            // Update TITLE screen data here!
+                // Update TITLE screen data here!
                 
-            // TODO: Title animation logic.......................(0.5p)
-          
+                // TODO: Title animation logic.......................(0.5p)
+                if(fadeOut2)
+            {
+                alpha2 += fadeSpeed2;
+               
+                if(alpha2 >= 1.0f)
+                {
+                    alpha2 = 1.0f;
+                }
+            }
+            else
+            {
+                alpha2 -= fadeSpeed2;
+                if(alpha2 <= 0.0f)
+                {
+                    alpha2 = 0.0f;
+                }
+            }
                         
             // TODO: "PRESS ENTER" logic.........................(0.5p)
+            if (IsKeyPressed(KEY_ENTER)) screen = GAMEPLAY;
+               
+               framesCounter++;
                 
             } break;
             case GAMEPLAY:
@@ -366,9 +392,11 @@ int main()
                     // Draw TITLE screen here!
                     
                     // TODO: Draw Title..............................(0.2p)
+                    DrawText("FINAL PONG", 100, 100, 100,Fade(BEIGE, alpha2));
+                   
                     
                     // TODO: Draw "PRESS ENTER" message..............(0.2p)
-
+                    if ((framesCounter/30)%2) DrawText("PRESS ENTER", 300, 300, 30, BLUE);
                     
                 } break;
                 case GAMEPLAY:
