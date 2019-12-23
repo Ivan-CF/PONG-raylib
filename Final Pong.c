@@ -53,51 +53,58 @@ int main()
     Rectangle enemy;
     
     enemy.width = 20;
-    enemy.height = 100;    
+    enemy.height = 2;    
     enemy.x = screenWidth - 50 - enemy.width;
     enemy.y = screenHeight/2 - enemy.height/2;
     
+    //int ballRadius;
+    int maxVelocity = 8;
+    int minVelocity = 8;
+    
+    int ballSize = 15;
     
     Vector2 ball;
     
     ball.x = screenWidth/2;
     ball.y = screenHeight/2;
     
-    int playerSpeedY;
-    int enemySpeed = 2;
-    
-    int maxVelocity = 8;
-    int minVelocity = 8;
-    
     Vector2 ballVelocity;
     
     ballVelocity.x = minVelocity;
     ballVelocity.y = minVelocity;
-    //int ballRadius;
-    int ballSize = 25;
     
-    int playerLife;
-    int enemyLife;
+    int enemySpeed = 1;
+    
+
+    //int ballRadius;
+
     
     //
+
+    int secondsCounter = 99;
+
     
-    int frameCount = 0;
-    int frameCount2 = 0;
-    int timeCounter = 0;
-    
-    Rectangle backRect = { screenWidth/2 - 200, screenHeight/2 - 50, 400, 100}; //Background Rectangle
-    int margin = 5; 
+    Rectangle backRect = { 30, 25, 100, 15} ; //Background Rectangle
+    int margin = 2; 
     Rectangle fillRect = { backRect.x + margin, backRect.y + margin, backRect.width - (2 * margin), backRect.height - (2 * margin)};
     Rectangle lifeRect = fillRect;
-    lifeRect.width /= 2;
-    Color lifeColor = YELLOW;
+    lifeRect.width = 96;
+    Color lifeColor = GREEN;
+    
+    Rectangle backRect2 = { screenWidth - 140, 25, 100, 15} ; //Background Rectangle
+    int margin2 = 2; 
+    Rectangle fillRect2 = { backRect2.x + margin2, backRect2.y + margin2, backRect2.width - (2 * margin2), backRect2.height - (2 * margin2)};
+    Rectangle lifeRect2 = fillRect2;
+    lifeRect2.width = 96;
+    Color lifeColor2 = GREEN;
+    
+   
     
     bool blink = true;
     bool win = false;
     bool lose = false;
     
-    int winNum = 0;
-    int loseNum = 0;
+
     
     int drainLife = 1;
     int healLife = 3;
@@ -106,7 +113,7 @@ int main()
     
     bool pause = false;
     
-    int secondsCounter = 99;
+
     
     int framesCounter;          // General pourpose frames counter
     
@@ -126,12 +133,13 @@ int main()
     //--------------------------------------------------------------------------------------
     
     // Main game loop
-    while (!WindowShouldClose())    // Detect window close button or ESC key
+    while (!WindowShouldClose() || (!IsKeyPressed(KEY_R)))    // Detect window close button or ESC key
     {
         // Update
         //----------------------------------------------------------------------------------
         switch(screen) 
         {
+            
             case LOGO: 
             {
                 // Update LOGO screen data here!
@@ -209,6 +217,9 @@ int main()
                     ball.y = screenHeight/2;
                     ballVelocity.x = -minVelocity;
                     ballVelocity.y = minVelocity;
+                    lifeRect2.width -= 20;
+                    
+                    
                    
                 }else if(ball.x < ballSize){
                     //Marca la pala derecha
@@ -218,6 +229,7 @@ int main()
                     ball.y = screenHeight/2;
                     ballVelocity.x = minVelocity;
                     ballVelocity.y = minVelocity;
+                    lifeRect.width -= 20;
                 }
                
                  if((ball.y > screenHeight - ballSize) || (ball.y < ballSize) ){
@@ -237,11 +249,11 @@ int main()
                 // TODO: Enemy movement logic (IA)...................(1p)
                     if( ball.x > iaLinex){
                     if(ball.y > enemy.y)
-                    enemy.y+=velocidady;
+                    enemy.y+=enemySpeed;
                 }
                
                     if(ball.y < enemy.y){
-                    enemy.y-=velocidady;
+                    enemy.y-=enemySpeed;
                 }
             
                 
@@ -295,63 +307,12 @@ int main()
                 
                 // TODO: Life bars decrease logic....................(1p)
                 
-                    if (!win && !lose)
-                {
-                    if (ball.x > screenWidth - ballSize) lifeRect.width -= healLife;
-                    
-                
-                    if (lifeRect.width <= 0)
-                    {
-                        lose = true;
-                        ++loseNum;
-                        lifeRect.width = 0;        
-                    }
-                    
-                    
-                    frameCount--;
-                    if (frameCount%20  == 0)
-                    {
-                        blink = !blink;
-                        frameCount = 0;
-                    }
-                    
-                    frameCount2--;
-                    if (frameCount2%60 == 0)
-                    {
-                        timeCounter++;
-                        frameCount2 = 0;
-                    }
-                    
-                    if (lifeRect.width >= 2*(fillRect.width/3)) 
-                    {
-                        lifeColor = GREEN;
-                    } 
-                    
-                    else if (lifeRect.width <= fillRect.width/3) 
-                    {
-                        lifeColor = ORANGE;
-                    }
-                    
-                    else 
-                    {
-                        lifeColor = YELLOW;
-                    }
-                }
-                     
-                else 
-                {
-                    blink = false;
-                    if (IsKeyPressed(KEY_R))
-                    {
-                        win = false;
-                        lose = false;
-                        lifeRect.width = fillRect.width/2;
-                    }
-                }
 
                 // TODO: Time counter logic..........................(0.2p)
+                    secondsCounter--;
 
                 // TODO: Game ending logic...........................(0.2p)
+                if (lifeRect.width <= 0 || lifeRect2.width <= 0) screen = ENDING;
                 
                 // TODO: Pause button logic..........................(0.2p)
                 if (IsKeyPressed(KEY_P)){
@@ -364,6 +325,12 @@ int main()
                 // Update END screen data here!
                 
                 // TODO: Replay / Exit game logic....................(0.5p)
+            if (IsKeyPressed(KEY_R)){
+
+                screen = GAMEPLAY;
+               }
+               
+               framesCounter++; 
                 
             } break;
             default: break;
@@ -404,26 +371,17 @@ int main()
                     // Draw GAMEPLAY screen here!
                     DrawLine(iaLinex, 0, iaLinex , screenHeight, BLACK);
                     // TODO: Draw player and enemy...................(0.2p)
-                    DrawRectangleRec(player, GREEN);                              
-                    DrawRectangleRec(enemy, GREEN);
+                    DrawRectangleRec(player, BLUE);                              
+                    DrawRectangleRec(enemy, RED);
                     DrawCircleV(ball, ballSize, BLACK);
                             
                     // TODO: Draw player and enemy life bars.........(0.5p)
                     
                     DrawRectangleRec (backRect, BLACK);
-                    DrawRectangleRec (fillRect, RED);
+                    DrawRectangleRec (backRect2, BLACK);
                     DrawRectangleRec (lifeRect, lifeColor);
-                    if (win == false && lose == false) //DrawText("Press Space!", (screenWidth - MeasureText("Press Space!", 60))/2, screenHeight/2 - (screenHeight/4), 60, BLACK);
-                    if (blink) DrawText("FIGHT!", (screenWidth - MeasureText("FIGHT!", 60))/2, screenHeight/2 + (screenHeight/5), 60, BLACK);
-                    if (win) DrawText("YOU WIN!", (screenWidth - MeasureText("YOU WIN!", 60))/2, screenHeight/2 - (screenHeight/4), 60, GREEN);
-                    if (lose) DrawText("YOU LOSE...", (screenWidth - MeasureText("YOU LOSE...", 60))/2, screenHeight/2 - (screenHeight/4), 60, RED);
-                    if (win || lose) DrawText("PRESS R TO RETRY", (screenWidth - MeasureText("PRESS R TO RETRY", 40))/2, screenHeight/2 + (screenHeight/5), 40, PURPLE);
-                    if (lifeRect.width <= fillRect.width/3) DrawText("NEVER GIVE UP!", (screenWidth - MeasureText("NEVER GIVE UP!", 40))/2, screenHeight/2 + (screenHeight/3), 40, ORANGE);
-                    if (lifeRect.width <= 2*(fillRect.width/3)) DrawText("YOU'RE ALMOST THERE!", (screenWidth - MeasureText("YOU'RE ALMOST THERE!", 40))/2, screenHeight/2 + (screenHeight/3), 40, GREEN);
-                    
-                    DrawText(FormatText("Wins: %i", winNum), screenWidth/4 - MeasureText(FormatText("Wins: %i", winNum), 40)/2, screenHeight/7, 40, BLACK); 
-                    DrawText(FormatText("Loses: %i", loseNum), 3*screenWidth/4 - MeasureText(FormatText("Loses: %i", loseNum), 40)/2, screenHeight/7, 40, BLACK); 
-                    
+                    DrawRectangleRec (lifeRect2, lifeColor2);
+                                       
                     // TODO: Draw time counter.......................(0.5p)
                     
                     // TODO: Draw pause message when required........(0.5p)
@@ -438,12 +396,26 @@ int main()
                     // Draw END screen here!
                     
                     // TODO: Draw ending message (win or loose)......(0.2p)
+                    if(lifeRect.width <= 0){
+                        DrawText("WINNER IS ENEMY", screenWidth/2 + 100, screenHeight/2, 30, RED);
+                        DrawText("ERES UNA MIERDA", screenWidth/2 - 350, screenHeight/2, 30, BLUE);
+                    }
+                    if(lifeRect2.width <= 0){
+                        DrawText("WINNER IS PLAYER 1", screenWidth/2 - 350, screenHeight/2, 30, BLUE);
+                        DrawText("VA OTRA, CAGAO!", screenWidth/2 + 50, screenHeight/2, 30, RED);
+                    }
+                DrawText("Press ENTER to PLAY AGAIN", 290, 320, 20, GRAY);
+                DrawText("Press ESCAPE to QUIT", 290, 420, 20, GRAY);
+                if (IsKeyPressed(KEY_R)){
+
+                screen = GAMEPLAY;
+                }
                     
                 } break;
                 default: break;
             }
         
-            DrawFPS(10, 10);
+           // DrawFPS(10, 10);
         
         EndDrawing();
         //----------------------------------------------------------------------------------
