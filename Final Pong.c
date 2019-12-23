@@ -38,6 +38,7 @@ int main()
     float alpha2 = 0;
     float fadeSpeed2 = 0.01f;
     
+      
     
     
     
@@ -81,7 +82,7 @@ int main()
     
     //
 
-    int secondsCounter = 99;
+
 
     
     Rectangle backRect = { 30, 25, 100, 15} ; //Background Rectangle
@@ -133,7 +134,7 @@ int main()
     //--------------------------------------------------------------------------------------
     
     // Main game loop
-    while (!WindowShouldClose() || (!IsKeyPressed(KEY_R)))    // Detect window close button or ESC key
+    while (!WindowShouldClose())    // Detect window close button or ESC key
     {
         // Update
         //----------------------------------------------------------------------------------
@@ -209,6 +210,7 @@ int main()
                 // Update GAMEPLAY screen data here!
 
                 // TODO: Ball movement logic.........................(0.2p)
+                
                 if(ball.x > screenWidth - ballSize){
                     //Marca la pala izquierda
                     //PlaySound(fxGoal);
@@ -307,13 +309,10 @@ int main()
                 
                 // TODO: Life bars decrease logic....................(1p)
                 
-
                 // TODO: Time counter logic..........................(0.2p)
-                    secondsCounter--;
-
+                   
                 // TODO: Game ending logic...........................(0.2p)
-                if (lifeRect.width <= 0 || lifeRect2.width <= 0) screen = ENDING;
-                
+                if (lifeRect.width <= 0 || lifeRect2.width <= 0 ) screen = ENDING;               
                 // TODO: Pause button logic..........................(0.2p)
                 if (IsKeyPressed(KEY_P)){
                 pause = !pause;
@@ -325,12 +324,15 @@ int main()
                 // Update END screen data here!
                 
                 // TODO: Replay / Exit game logic....................(0.5p)
-            if (IsKeyPressed(KEY_R)){
 
-                screen = GAMEPLAY;
-               }
-               
-               framesCounter++; 
+                
+            if (IsKeyPressed(KEY_R)){
+               screen = GAMEPLAY;
+               lifeRect.width = 96;
+               lifeRect2.width = 96;
+               ball.x = screenWidth/2;
+               ball.y = screenHeight/2;
+            } 
                 
             } break;
             default: break;
@@ -383,7 +385,6 @@ int main()
                     DrawRectangleRec (lifeRect2, lifeColor2);
                                        
                     // TODO: Draw time counter.......................(0.5p)
-                    
                     // TODO: Draw pause message when required........(0.5p)
                     if(pause){
                         DrawRectangle(0, 0, screenWidth, screenHeight, (Color){ 0, 255, 0, 255/2 });  
@@ -397,15 +398,16 @@ int main()
                     
                     // TODO: Draw ending message (win or loose)......(0.2p)
                     if(lifeRect.width <= 0){
-                        DrawText("WINNER IS ENEMY", screenWidth/2 + 100, screenHeight/2, 30, RED);
-                        DrawText("ERES UNA MIERDA", screenWidth/2 - 350, screenHeight/2, 30, BLUE);
+                        DrawText("WINNER IS ENEMY", screenWidth/2 + 100, screenHeight/2 + 20, 30, RED);
+                        DrawText("ERES UNA MIERDA", screenWidth/2 - 350, screenHeight/2 + 20, 30, BLUE);
                     }
                     if(lifeRect2.width <= 0){
-                        DrawText("WINNER IS PLAYER 1", screenWidth/2 - 350, screenHeight/2, 30, BLUE);
-                        DrawText("VA OTRA, CAGAO!", screenWidth/2 + 50, screenHeight/2, 30, RED);
+                        DrawText("WINNER IS PLAYER 1", screenWidth/2 - 350, screenHeight/2 + 20, 30, BLUE);
+                        DrawText("VA OTRA, CAGAO!", screenWidth/2 + 50, screenHeight/2 + 20, 30, RED);
                     }
-                DrawText("Press ENTER to PLAY AGAIN", 290, 320, 20, GRAY);
-                DrawText("Press ESCAPE to QUIT", 290, 420, 20, GRAY);
+                   
+                DrawText("Press R to PLAY AGAIN", 250, 320, 20, GRAY);
+                DrawText("Press ESCAPE to QUIT", 250, 360, 20, GRAY);
                 if (IsKeyPressed(KEY_R)){
 
                 screen = GAMEPLAY;
