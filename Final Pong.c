@@ -38,7 +38,8 @@ int main()
     float alpha2 = 0;
     float fadeSpeed2 = 0.01f;
     
-      
+    int secondsCounter = 99;
+    
     
     
     
@@ -309,10 +310,14 @@ int main()
                 
                 // TODO: Life bars decrease logic....................(1p)
                 
+
                 // TODO: Time counter logic..........................(0.2p)
-                   
+                    if (!(framesCounter++%60)){
+                        secondsCounter --;
+                    }
+
                 // TODO: Game ending logic...........................(0.2p)
-                if (lifeRect.width <= 0 || lifeRect2.width <= 0 ) screen = ENDING;               
+                if (lifeRect.width <= 0 || lifeRect2.width <= 0 || secondsCounter < 0) screen = ENDING;               
                 // TODO: Pause button logic..........................(0.2p)
                 if (IsKeyPressed(KEY_P)){
                 pause = !pause;
@@ -332,6 +337,7 @@ int main()
                lifeRect2.width = 96;
                ball.x = screenWidth/2;
                ball.y = screenHeight/2;
+               secondsCounter = 99;
             } 
                 
             } break;
@@ -385,6 +391,7 @@ int main()
                     DrawRectangleRec (lifeRect2, lifeColor2);
                                        
                     // TODO: Draw time counter.......................(0.5p)
+                    DrawText(FormatText("%i", secondsCounter), screenWidth/2 - 20, 10 , 40, BROWN);
                     // TODO: Draw pause message when required........(0.5p)
                     if(pause){
                         DrawRectangle(0, 0, screenWidth, screenHeight, (Color){ 0, 255, 0, 255/2 });  
@@ -405,7 +412,9 @@ int main()
                         DrawText("WINNER IS PLAYER 1", screenWidth/2 - 350, screenHeight/2 + 20, 30, BLUE);
                         DrawText("VA OTRA, CAGAO!", screenWidth/2 + 50, screenHeight/2 + 20, 30, RED);
                     }
-                   
+                    if (secondsCounter < 0){
+                        DrawText("FIN DEL TIEMPO, ES UN EMPATE", screenWidth/2 - 100, screenHeight/2, 30, ORANGE);
+                    }
                 DrawText("Press R to PLAY AGAIN", 250, 320, 20, GRAY);
                 DrawText("Press ESCAPE to QUIT", 250, 360, 20, GRAY);
                 if (IsKeyPressed(KEY_R)){
