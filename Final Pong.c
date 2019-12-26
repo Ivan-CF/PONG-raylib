@@ -39,9 +39,8 @@ int main()
     float fadeSpeed2 = 0.01f;
     
     int secondsCounter = 99;
-    
-    
-    
+
+    srand(time(NULL));
     
     // NOTE: Here there are some useful variables (should be initialized)
     
@@ -236,7 +235,7 @@ int main()
                 if(ball.x > screenWidth +150){
                     //Marca la pala izquierda
                     ball.x = screenWidth/2;
-                    ball.y = screenHeight/2;
+                    ball.y = screenHeight/2 + rand() % 180;
                     ballVelocity.x = -minVelocity;
                     ballVelocity.y = minVelocity;
                     lifeRect2.width -= 20;
@@ -249,7 +248,7 @@ int main()
                     //Marca la pala derecha
                     //enemy++;
                     ball.x = screenWidth/2;
-                    ball.y = screenHeight/2;
+                    ball.y = screenHeight/2 + rand() % 180;
                     ballVelocity.x = minVelocity;
                     ballVelocity.y = minVelocity;
                     lifeRect.width -= 20;
