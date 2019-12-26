@@ -48,34 +48,33 @@ int main()
     
     player.width = 10;
     player.height = 60;    
-    player.x = 50;
+    player.x = 30;
     player.y = screenHeight/2 - player.height/2;
     
     Rectangle enemy;
     
     enemy.width = 10;
     enemy.height = 60;    
-    enemy.x = screenWidth - 50 - enemy.width;
+    enemy.x = screenWidth - 30 - enemy.width;
     enemy.y = screenHeight/2 - enemy.height/2;
     
+    int enemySpeed = 6.5;
+    
     //int ballRadius;
-    int maxVelocity = 10;
-    int minVelocity = 3.5;
+    int maxVelocity = 12;
+    int minVelocity = 5;
     
     int ballSize = 10;
     
     Vector2 ball;
     
     ball.x = screenWidth/2;
-    ball.y = screenHeight/2;
+    ball.y = screenHeight/2 + rand() % 190;
     
     Vector2 ballVelocity;
     
     ballVelocity.x = minVelocity;
     ballVelocity.y = minVelocity;
-    
-    int enemySpeed = 5;
-
 
     Rectangle backRect = { 30, 25, 100, 15} ; //Background Rectangle
     int margin = 2; 
@@ -89,19 +88,12 @@ int main()
     Rectangle fillRect2 = { backRect2.x + margin2, backRect2.y + margin2, backRect2.width - (2 * margin2), backRect2.height - (2 * margin2)};
     Rectangle lifeRect2 = fillRect2;
     lifeRect2.width = 96;
-    Color lifeColor2 = GREEN;
-    
-   
+    Color lifeColor2 = GREEN;  
     
     bool blink = true;
     bool win = false;
     bool lose = false;
-    
-
-  
     bool pause = false;
-    
-
     
     int framesCounter;          // General pourpose frames counter
     
@@ -116,7 +108,6 @@ int main()
     Texture2D background = LoadTexture("resources/forest.png");
     
     float scrollingBack = 0.0f;
-    // NOTE: If using SpriteFonts, declare SpriteFont variables here (after InitWindow)
     
     // NOTE: If using sound or music, InitAudioDevice() and load Sound variables here (after InitAudioDevice)
     InitAudioDevice();
@@ -231,35 +222,9 @@ int main()
                 scrollingBack -= 0.3f;
                 if (scrollingBack <= -background.width*2) scrollingBack = 0;
                 // TODO: Ball movement logic.........................(0.2p)
-                
-                if(ball.x > screenWidth +150){
-                    //Marca la pala izquierda
-                    ball.x = screenWidth/2;
-                    ball.y = screenHeight/2 + rand() % 180;
-                    ballVelocity.x = -minVelocity;
-                    ballVelocity.y = minVelocity;
-                    lifeRect2.width -= 20;
-                }
-                if (ball.x > 800 && ball.x < 820){
-                    PlaySound(cuandomarcas);
-                }
-                  
-                else if(ball.x < ballSize -290){
-                    //Marca la pala derecha
-                    //enemy++;
-                    ball.x = screenWidth/2;
-                    ball.y = screenHeight/2 + rand() % 180;
-                    ballVelocity.x = minVelocity;
-                    ballVelocity.y = minVelocity;
-                    lifeRect.width -= 20;
-                }
-                if (ball.x <= 0 && ball.x >= -10){
-                    PlaySound(cuandotemarcan);
-                }
-               
+ 
                  if((ball.y > screenHeight - ballSize) || (ball.y < ballSize) ){
                     ballVelocity.y *=-1;
-                    //PlaySound(fxWav);
                 }
                 
                 // TODO: Player movement logic.......................(0.2p)
@@ -303,10 +268,8 @@ int main()
                         }
                     UpdateMusicStream(palaiz);
                     PlayMusicStream(palaiz);
-                    enemySpeed = 4;
                     }
-                }                 
-                
+                }                                
                 // TODO: Collision detection (ball-enemy) logic......(0.5p)
                 if(enemy.y<0){
                     enemy.y = 0;
@@ -315,12 +278,10 @@ int main()
                 if(enemy.y > (screenHeight - enemy.height)){
                     enemy.y = screenHeight - enemy.height;
                 }
-                
                     if(CheckCollisionCircleRec(ball, ballSize, enemy)){
                         UpdateMusicStream(palade);
                         PlayMusicStream(palade);
                     if(ballVelocity.x>0){
-                        //PlaySound(fxWav);
                         if(abs(ballVelocity.x)<maxVelocity){                    
                             ballVelocity.x *=-1.1;
                             ballVelocity.y *= 1.1;
@@ -329,27 +290,52 @@ int main()
                         }
                     UpdateMusicStream(palade);
                     PlayMusicStream(palade);
-                    enemySpeed = 4;
                     }
                 }
                 
                 // TODO: Collision detection (ball-limits) logic.....(1p)
-                if(!pause){
-                    ball.x += ballVelocity.x;
-                    ball.y += ballVelocity.y;
+                if(ball.x > screenWidth +150){
+                    //Marca la pala izquierda
+                    ball.x = screenWidth/2;
+                    ball.y = screenHeight/2 + rand() % 190;
+                    ballVelocity.x = -minVelocity;
+                    ballVelocity.y = minVelocity;
+                    lifeRect2.width -= 20;
+                }
+                if (ball.x > 800 && ball.x < 820){
+                    PlaySound(cuandomarcas);
+                }
+                else if(ball.x < ballSize -290){
+                    //Marca la pala derecha
+                    ball.x = screenWidth/2;
+                    ball.y = screenHeight/2 + rand() % 190;
+                    ballVelocity.x = minVelocity;
+                    ballVelocity.y = minVelocity;
+                    lifeRect.width -= 20;
+                }
+                if (ball.x <= 0 && ball.x >= -10){
+                    PlaySound(cuandotemarcan);
                 }
                 
                 // TODO: Life bars decrease logic....................(1p)
+                if(ball.x > screenWidth +150){  
+                    lifeRect2.width -= 20;
+                }
+                else if(ball.x < ballSize -290){                  
+                    lifeRect.width -= 20;
+                }
                 
-
                 // TODO: Time counter logic..........................(0.2p)
                     if (!(framesCounter++%60)){
                         secondsCounter --;
                     }
-
                 // TODO: Game ending logic...........................(0.2p)
                 if (lifeRect.width <= 0 || lifeRect2.width <= 0 || secondsCounter < 0) screen = ENDING;               
                 // TODO: Pause button logic..........................(0.2p)
+                if(!pause){
+                    ball.x += ballVelocity.x;
+                    ball.y += ballVelocity.y;
+                }
                 if (IsKeyPressed(KEY_P)){
                 pause = !pause;
                 }
@@ -394,10 +380,8 @@ int main()
                 {
                     ClearBackground(BLACK);
                     // Draw LOGO screen here!
-                    
                     // TODO: Draw Logo...............................(0.2p)
                     DrawText("Programmed with 'Raylib' by Ivan Carrizosa",25,200,35, Fade(SKYBLUE, alpha));
-                
                     
                 } break;
                 case TITLE: 
@@ -405,9 +389,9 @@ int main()
                     // Draw TITLE screen here!
                     DrawTextureEx(title, (Vector2){ scrollingBack, 20 }, 0.0f, 2.0f, WHITE);
                     DrawTextureEx(title, (Vector2){ background.width*2 + scrollingBack, 20 }, 0.0f, 2.0f, WHITE);
+                    
                     // TODO: Draw Title..............................(0.2p)
                     DrawText("SKY PONG", 150, 100, 100,Fade(DARKGREEN, alpha2));
-                   
                     
                     // TODO: Draw "PRESS ENTER" message..............(0.2p)
                     if ((framesCounter/30)%2) DrawText("PRESS ENTER", 300, 300, 30, DARKBLUE);
@@ -453,7 +437,7 @@ int main()
                         DrawText("ENEMY DEFEATED", screenWidth/2 + 50, screenHeight/2 - 30, 30, RED);
                     }
                     if (secondsCounter < 0){
-                        DrawText("FIN DEL TIEMPO, ES UN EMPATE", screenWidth/2 - 100, screenHeight/2, 30, ORANGE);
+                        DrawText("FIN DEL TIEMPO, ES UN EMPATE", screenWidth/2 - 250, screenHeight/2, 30, ORANGE);
                     }
                 DrawText("Press R to PLAY AGAIN", 250, 320, 20, GRAY);
                 DrawText("Press ESCAPE to QUIT", 250, 360, 20, GRAY);
